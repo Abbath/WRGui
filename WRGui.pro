@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = WRGui
 TEMPLATE = app
+CONFIG += c++17
 
 
 SOURCES += main.cpp\
@@ -34,4 +35,4 @@ HEADERS  += mainwindow.hpp \
 
 FORMS    += mainwindow.ui
 
-QMAKE_CXXFLAGS += -std=c++11
+#QMAKE_CXXFLAGS += -std=c++17

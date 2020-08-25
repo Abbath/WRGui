@@ -17,26 +17,26 @@ void MainWindow::paintEvent(QPaintEvent *e)
     if(run){
         for (int i = 0; i < FIELD_WIDTH ; ++i) {
             for (int j = 0; j < FIELD_HEIGHT; ++j) {
-                if(f->getCell(Coords(std::make_pair(i, j))).getWolfIndexes().size() &&
-                        f->getCell(Coords(std::make_pair(i, j))).getRabbitIndexes().size()){
+                if(f->getCell(Coords{i, j}).getWolfIndexes().size() &&
+                        f->getCell(Coords{i, j}).getRabbitIndexes().size()){
                     imagePainter.setPen(Qt::yellow);
                     imagePainter.drawPoint(i, j);
-                }else if(f->getCell(Coords(std::make_pair(i, j))).getWolfIndexes().size()){
+                }else if(f->getCell(Coords{i, j}).getWolfIndexes().size()){
                     imagePainter.setPen(Qt::red);
                     imagePainter.drawPoint(i, j);
-                }else if(f->getCell(Coords(std::make_pair(i, j))).getRabbitIndexes().size()){
+                }else if(f->getCell(Coords{i, j}).getRabbitIndexes().size()){
                     imagePainter.setPen(Qt::blue);
                     imagePainter.drawPoint(i, j);      
-                }else if(f->wasWolfHere(Coords(std::make_pair(i, j)))){
-                    unsigned red = std::min(255u, f->getCell(std::make_pair(i, j)).getTotalSmell());
-                    imagePainter.setPen(QColor(red, 128, 128));
+                }else if(f->wasWolfHere(Coords{i, j})){
+                    unsigned red = std::min(255u, f->getCell({i, j}).getTotalSmell());
+                    imagePainter.setPen(QColor::fromHsv(0, red / 20.0 * 255, 100 + 5 * red));
                     imagePainter.drawPoint(i, j);
-                }else if(f->wasRabbitHere(Coords(std::make_pair(i,j)))){
-                    unsigned blue = std::min(255u, f->getCell(std::make_pair(i, j)).getTotalSmell()); 
-                    imagePainter.setPen(QColor(128, 128, blue));
+                }else if(f->wasRabbitHere(Coords{i, j})){
+                    unsigned blue = std::min(255u, f->getCell({i, j}).getTotalSmell());
+                    imagePainter.setPen(QColor::fromHsv(240, blue / 20.0 * 255, 100 + 5 * blue));
                     imagePainter.drawPoint(i, j);
-                }else if(f->getCell(Coords(std::make_pair(i, j))).isThereGrass()){
-                    imagePainter.setPen(Qt::green);
+                }else if(f->getCell(Coords{i, j}).isThereGrass()){
+                    imagePainter.setPen(QColor::fromHsv(120, 255, f->getCell(Coords{i, j}).grass / 150.0 * 255));
                     imagePainter.drawPoint(i, j);
                 }else{
                     imagePainter.setPen(Qt::white);
@@ -56,6 +56,13 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete f;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    if(e->key() == Qt::Key_W){
+        f->write();
+    }
 }
 
 void MainWindow::on_actionRun_triggered()

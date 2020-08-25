@@ -19,6 +19,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     void paintEvent(QPaintEvent* e);
     ~MainWindow();
+    void keyPressEvent(QKeyEvent *e);
     
 private slots:
     void on_actionRun_triggered();
