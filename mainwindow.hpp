@@ -26,6 +26,7 @@ private slots:
     
 private:
     bool run = false;
+    bool write_im = false;
     Field* f;
     Ui::MainWindow *ui;
 };

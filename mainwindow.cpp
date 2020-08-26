@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    f = new Field(0);
+    f = new Field(this);
     connect(f, SIGNAL(nextStep()), this, SLOT(update()));
 }
 
@@ -26,7 +26,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
                     imagePainter.drawPoint(i, j);
                 }else if(f->getCell(Coords{i, j}).getRabbitIndexes().size()){
                     imagePainter.setPen(Qt::blue);
-                    imagePainter.drawPoint(i, j);      
+                    imagePainter.drawPoint(i, j);
                 }else if(f->wasWolfHere(Coords{i, j})){
                     unsigned red = std::min(255u, f->getCell({i, j}).getTotalSmell());
                     imagePainter.setPen(QColor::fromHsv(0, red / 20.0 * 255, 100 + 5 * red));
@@ -45,9 +45,11 @@ void MainWindow::paintEvent(QPaintEvent *e)
             }
         }
         QPainter painter(this);
-        QMatrix m;
-        m.rotate(90);
-        painter.drawImage(0,0, im.transformed(m).scaled(this->width(), this->height()));
+        painter.drawImage(0,0, im.scaled(this->width(), this->height()));
+        if(write_im){
+            write_im = false;
+            im.scaled(1920, 1080).save("image.png");
+        }
     }
     e->accept();
 }
@@ -61,7 +63,17 @@ MainWindow::~MainWindow()
 void MainWindow::keyPressEvent(QKeyEvent *e)
 {
     if(e->key() == Qt::Key_W){
-        f->write();
+        if(e->modifiers() & Qt::ControlModifier){
+            f->populateWolfs();
+        }else{
+            f->write();
+        }
+    }
+    if(e->key() == Qt::Key_I){
+        write_im = true;
+    }
+    if(e->key() == Qt::Key_R && e->modifiers() & Qt::ControlModifier){
+        f->populateRabbits();
     }
 }
 
